@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #7b3fe4;
+  --color-night: #1a1330;
+  --color-deep: #140e26;
+  --color-cream: #f4f1ea;
+  --color-muted: #b8b4ac;
+  --color-dim: #7b7873;
+  --color-line: #3b2e58;
+  --color-card: #221a3a;
+  --color-panel: #1e1730;
+  --color-ok: #00b67a;
+  --color-ok-ink: #0b1f17;
+
+  --font-display: "Unbounded", sans-serif;
+  --font-body: "Space Grotesk", sans-serif;
+}
+
+:root {
+  /* Gouttière horizontale des sections : mobile → desktop (clamp de la maquette) */
+  --px: 20px;
+}
+@media (width >= 640px) {
+  :root { --px: 32px; }
+}
+@media (width >= 1024px) {
+  :root { --px: clamp(48px, 6vw, 140px); }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--color-night);
+    color: var(--color-cream);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--color-cream); }
+  [id] { scroll-margin-top: 24px; }
+}
+
+@utility bg-glow {
+  background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(123, 63, 228, 0.14), transparent 70%), #140e26;
+}
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@keyframes revUp { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+@keyframes revDown { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes hlBg { from { background-size: 0% 88%; } to { background-size: 100% 88%; } }
+@keyframes hlInk { from { color: transparent; } to { color: #f4f1ea; } }
+@keyframes modIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Surlignage animé des mots-clés des titres */
+.hl {
+  display: inline;
+  color: #f4f1ea;
+  padding: 0.02em 0.14em;
+  margin: 0 -0.14em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background-image: linear-gradient(var(--hl-bg, #7b3fe4), var(--hl-bg, #7b3fe4));
+  background-repeat: no-repeat;
+  background-size: 100% 88%;
+  background-position: 0 60%;
+  border-radius: 0.06em;
+}
+/* Caché seulement quand le JS tourne (classe posée dans <head>) : sans JS, le texte reste visible. */
+html.js .hl[data-state="idle"] {
+  color: transparent;
+  background-size: 0% 88%;
+}
+.hl[data-state="play"] {
+  animation:
+    hlBg 0.7s cubic-bezier(0.7, 0, 0.2, 1) var(--hl-d1, 0.1s) both,
+    hlInk 0.4s ease var(--hl-d2, 0.4s) both;
+}
+
+.anim-modin {
+  animation: modIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hl[data-state] { animation: none !important; color: #f4f1ea !important; background-size: 100% 88% !important; }
+  .anim-modin { animation: none; }
+}
